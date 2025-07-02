@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>UTC Electric Room</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+      #departamento {
+        font-size: 5em;
+        color: #111;
+        margin-bottom: 20px;
+      }
+      #hora {
+        font-size: 6em;
+        color: #000;
+      }
+      #grupo {
+        font-size: 10em;
+        margin-top: 30px;
+      }
+    </style>
+    <script>
+      const grupos = [
+        "🐦", "🦅", "🫏", "🦋", "🐶",
+        "🐐", "🐏", "🐫", "🐍", "🐇",
+        "🐎", "🐘", "🐓", "🐱", "🐊",
+        "🦁", "🐒", "🐖", "🦚", "🦃",
+        "🐃", "🐯", "🐻", "🦌", "🐄"
+      ];
+
+      function atualizarTela() {
+        const agora = new Date();
+        const h = agora.getHours().toString().padStart(2, '0');
+        const m = agora.getMinutes().toString().padStart(2, '0');
+        const soma = parseInt(h) + parseInt(m);
+        let grupoNum = soma % 25;
+        if (grupoNum === 0) grupoNum = 25;
+        const grupoEmoji = grupos[grupoNum - 1];
+
+        document.getElementById("departamento").textContent = "UTC Electric Room";
+        document.getElementById("hora").textContent = h + ":" + m + " | " + grupoNum;
+        document.getElementById("grupo").textContent = grupoEmoji;
+      }
+
+      setInterval(atualizarTela, 60000);
+    </script>
+  </head>
+  <body onload="atualizarTela()">
+    <div id="departamento"></div>
+    <div id="hora"></div>
+    <div id="grupo"></div>
+  </body>
+</html>
