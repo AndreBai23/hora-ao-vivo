@@ -21,35 +21,46 @@
         margin-bottom: 20px;
       }
       #hora {
-        font-size: 6em;
+        font-size: 5em;
         color: #000;
       }
       #grupo {
-        font-size: 10em;
-        margin-top: 30px;
+        font-size: 4em;
+        margin-top: 20px;
+        color: #333;
       }
     </style>
     <script>
-      const grupos = [
-        "🐦", "🦅", "🫏", "🦋", "🐶",
-        "🐐", "🐏", "🐫", "🐍", "🐇",
-        "🐎", "🐘", "🐓", "🐱", "🐊",
-        "🦁", "🐒", "🐖", "🦚", "🦃",
-        "🐃", "🐯", "🐻", "🦌", "🐄"
+      const nomes = [
+        "Ostrich", "Eagle", "Donkey", "Butterfly", "Dog",
+        "Goat", "Ram", "Camel", "Snake", "Rabbit",
+        "Horse", "Elephant", "Rooster", "Cat", "Alligator",
+        "Lion", "Monkey", "Pig", "Peacock", "Turkey",
+        "Bull", "Tiger", "Bear", "Deer", "Cow"
       ];
 
       function atualizarTela() {
         const agora = new Date();
-        const h = agora.getHours().toString().padStart(2, '0');
-        const m = agora.getMinutes().toString().padStart(2, '0');
-        const soma = parseInt(h) + parseInt(m);
-        let grupoNum = soma % 25;
-        if (grupoNum === 0) grupoNum = 25;
-        const grupoEmoji = grupos[grupoNum - 1];
+        const dia = agora.getDate();
+        const mes = agora.getMonth() + 1;
+        const h = agora.getHours();
+        const m = agora.getMinutes();
+
+        let total = dia + mes + h + m;
+        let dezenas = total % 100;
+
+        if (dezenas === 0) dezenas = 1;
+
+        let grupoNum = Math.ceil(dezenas / 4);
+        if (grupoNum > 25) grupoNum = 25;
+
+        const hh = h.toString().padStart(2, '0');
+        const mm = m.toString().padStart(2, '0');
+        const animal = nomes[grupoNum - 1];
 
         document.getElementById("departamento").textContent = "UTC Electric Room";
-        document.getElementById("hora").textContent = h + ":" + m + " | " + grupoNum;
-        document.getElementById("grupo").textContent = grupoEmoji;
+        document.getElementById("hora").textContent = hh + ":" + mm;
+        document.getElementById("grupo").textContent = grupoNum + " - " + animal;
       }
 
       setInterval(atualizarTela, 60000);
