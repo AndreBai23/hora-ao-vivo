@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hora Atual</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f3f3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      #hora {
+        font-size: 5em;
+        color: #333;
+      }
+    </style>
+    <script>
+      function atualizarHora() {
+        const agora = new Date();
+        document.getElementById("hora").textContent = agora.toLocaleTimeString();
+      }
+      setInterval(atualizarHora, 1000);
+    </script>
+  </head>
+  <body onload="atualizarHora()">
+    <div id="hora"></div>
+  </body>
+</html>
