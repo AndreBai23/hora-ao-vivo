@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Welding</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+      #departamento {
+        font-size: 5em;
+        color: #111;
+        margin-bottom: 20px;
+      }
+      #hora {
+        font-size: 5em;
+        color: #000;
+      }
+      #grupo {
+        font-size: 4em;
+        margin-top: 20px;
+        color: #333;
+      }
+    </style>
+    <script>
+      const nomes = [
+        "Ostrich", "Eagle", "Donkey", "Butterfly", "Dog",
+        "Goat", "Ram", "Camel", "Snake", "Rabbit",
+        "Horse", "Elephant", "Rooster", "Cat", "Alligator",
+        "Lion", "Monkey", "Pig", "Peacock", "Turkey",
+        "Bull", "Tiger", "Bear", "Deer", "Cow"
+      ];
+
+      function atualizarTela() {
+        const agora = new Date();
+        const dia = agora.getDate();
+        const mes = agora.getMonth() + 1;
+        const h = agora.getHours();
+        const m = agora.getMinutes();
+
+        let total = dia + mes + h + m;
+        let dezenas = total % 100;
+
+        if (dezenas === 0) dezenas = 1;
+
+        let grupoNum = Math.ceil(dezenas / 4);
+        if (grupoNum > 25) grupoNum = 25;
+
+        const hh = h.toString().padStart(2, '0');
+        const mm = m.toString().padStart(2, '0');
+        const animal = nomes[grupoNum - 1];
+
+        document.getElementById("departamento").textContent = "Welding";
+        document.getElementById("hora").textContent = hh + ":" + mm;
+        document.getElementById("grupo").textContent = grupoNum + " - " + animal;
+      }
+
+      setInterval(atualizarTela, 60000);
+    </script>
+  </head>
+  <body onload="atualizarTela()">
+    <div id="departamento"></div>
+    <div id="hora"></div>
+    <div id="grupo"></div>
+  </body>
+</html>
