@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>UTC Electric Room</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        padding: 20px;
+      }
+      #departamento {
+        font-size: 4em;
+        color: #111;
+        margin-bottom: 20px;
+      }
+      #hora {
+        font-size: 5em;
+        color: #000;
+      }
+      #gps_label {
+        font-size: 2.5em;
+        color: #555;
+        margin-top: 15px;
+      }
+      #grupo {
+        font-size: 3em;
+        margin-top: 10px;
+        color: #333;
+      }
+      #codigo {
+        font-size: 3.5em;
+        margin-top: 20px;
+        color: #000;
+        font-weight: bold;
+      }
+      #alerta {
+        color: red;
+        font-size: 2em;
+        margin-top: 30px;
+      }
+    </style>
+    <script>
+      const nomes = [
+        "Ostrich", "Eagle", "Donkey", "Butterfly", "Dog",
+        "Goat", "Ram", "Camel", "Snake", "Rabbit",
+        "Horse", "Elephant", "Rooster", "Cat", "Alligator",
+        "Lion", "Monkey", "Pig", "Peacock", "Turkey",
+        "Bull", "Tiger", "Bear", "Deer", "Cow"
+      ];
+
+      const destinoLat = 32.1648953;
+      const destinoLng = -81.4575958;
+
+      function distancia(lat1, lon1, lat2, lon2) {
+        const toRad = x => x * Math.PI / 180;
+        const R = 6371e3;
+        const φ1 = toRad(lat1), φ2 = toRad(lat2);
+        const Δφ = toRad(lat2 - lat1);
+        const Δλ = toRad(lon2 - lon1);
+        const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      }
+
+      function atualizarTela() {
+        const agora = new Date();
+        const d = agora.getDate(), mo = agora.getMonth() + 1;
+        const h = agora.getHours(), m = agora.getMinutes();
+        const total = d + mo + h + m;
+        let dezenas = total % 100;
+        if (dezenas === 0) dezenas = 1;
+        let grupoNum = Math.ceil(dezenas / 4);
+        if (grupoNum > 25) grupoNum = 25;
+
+        const hh = h.toString().padStart(2, '0');
+        const mm = m.toString().padStart(2, '0');
+        const animal = nomes[grupoNum - 1];
+
+        let codigo = "";
+        if (d % 2 === 0) {
+          codigo = animal.charAt(0).toUpperCase() + grupoNum;
+        }
+
+        document.getElementById("departamento").textContent = "UTC Electric Room";
+        document.getElementById("hora").textContent = hh + ":" + mm;
+        document.getElementById("gps_label").textContent = "GPS/T:";
+        document.getElementById("grupo").textContent = grupoNum + " - " + animal;
+        document.getElementById("codigo").textContent = codigo;
+      }
+
+      function validarLocalizacao(pos) {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const dist = distancia(lat, lng, destinoLat, destinoLng);
+        if (dist <= 25) {
+          atualizarTela();
+        } else {
+          document.getElementById("departamento").textContent = "UTC Electric Room";
+          document.getElementById("alerta").textContent = "Outside authorized area.";
+        }
+      }
+
+      function erroLoc() {
+        document.getElementById("departamento").textContent = "UTC Electric Room";
+        document.getElementById("alerta").textContent = "Location permission denied.";
+      }
+
+      window.onload = () => {
+        navigator.geolocation.getCurrentPosition(validarLocalizacao, erroLoc);
+      };
+    </script>
+  </head>
+  <body>
+    <div id="departamento"></div>
+    <div id="hora"></div>
+    <div id="gps_label"></div>
+    <div id="grupo"></div>
+    <div id="codigo"></div>
+    <div id="alerta"></div>
+  </body>
+</html>
