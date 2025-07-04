@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>UTC</title>
+  <title>Paint 3F Electric Room</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,8 +29,8 @@
       "Lion", "Monkey", "Pig", "Peacock", "Turkey",
       "Bull", "Tiger", "Bear", "Deer", "Cow"
     ];
-    const destinoLat = 32.165539;
-    const destinoLng = -81.4575261;
+    const destinoLat = 32.1659934;
+    const destinoLng = -81.4506824;
 
     function distancia(lat1, lon1, lat2, lon2) {
       const toRad = x => x * Math.PI / 180;
@@ -60,7 +60,7 @@
       const hh = h.toString().padStart(2, '0');
       const mm = m.toString().padStart(2, '0');
 
-      document.getElementById("departamento").textContent = "UTC";
+      document.getElementById("departamento").textContent = "Paint 3F Electric Room";
       document.getElementById("hora").textContent = hh + ":" + mm;
       document.getElementById("latlng").textContent = "Your location: " + lat.toFixed(6) + ", " + lng.toFixed(6);
       document.getElementById("target").textContent = "Target location: " + destinoLat + ", " + destinoLng;
