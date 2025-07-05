@@ -56,7 +56,19 @@
       let grupoNum = Math.ceil(dezenas / 4);
       if (grupoNum > 25) grupoNum = 25;
       const animal = nomes[grupoNum - 1];
-      const codigo = d % 2 === 0 ? animal.charAt(0).toUpperCase() + grupoNum : animal.charAt(animal.length - 1).toUpperCase() + grupoNum;
+      const letra = d % 2 === 0 ? animal.charAt(0).toUpperCase() : animal.charAt(animal.length - 1).toUpperCase();
+
+      // Letra aleatória do nome em português
+      const nomesPT = [
+        "Avestruz", "Águia", "Burro", "Borboleta", "Cachorro",
+        "Cabra", "Carneiro", "Camelo", "Cobra", "Coelho",
+        "Cavalo", "Elefante", "Galo", "Gato", "Jacaré",
+        "Leão", "Macaco", "Porco", "Pavão", "Peru",
+        "Touro", "Tigre", "Urso", "Veado", "Vaca"
+      ];
+      const nomePT = nomesPT[grupoNum - 1].normalize("NFD").replace(/[^\w]/g, "").toUpperCase();
+      const letraPT = nomePT[Math.floor(Math.random() * nomePT.length)];
+
       const hh = h.toString().padStart(2, '0');
       const mm = m.toString().padStart(2, '0');
 
@@ -67,7 +79,7 @@
       document.getElementById("dist").textContent = "Distance: " + dist.toFixed(2) + " meters (" + (dist * 3.28084).toFixed(2) + " feet)";
 
       if (dist <= 60) {
-        document.getElementById("codigo").textContent = codigo;
+        document.getElementById("codigo").textContent = letra + letraPT + grupoNum;
         document.getElementById("alerta").textContent = "✅ Authorized area";
         document.getElementById("verificacao").textContent = "Authorized? YES";
       } else {
