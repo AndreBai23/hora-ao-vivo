@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DEMO Authorized</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    #departamento { font-size: 4em; }
+    #hora { font-size: 5em; }
+    #codigo { font-size: 4em; margin-top: 20px; }
+    #alerta { font-size: 3em; color: red; margin-top: 20px; }
+    #latlng, #target, #dist, #verificacao { font-size: 1.5em; margin-top: 10px; }
+  </style>
+  <script>
+    const nomes = [
+      "Ostrich", "Eagle", "Donkey", "Butterfly", "Dog",
+      "Goat", "Ram", "Camel", "Snake", "Rabbit",
+      "Horse", "Elephant", "Rooster", "Cat", "Alligator",
+      "Lion", "Monkey", "Pig", "Peacock", "Turkey",
+      "Bull", "Tiger", "Bear", "Deer", "Cow"
+    ];
+    const destinoLat = 32.123456;
+    const destinoLng = -81.654321;
+
+    function atualizar() {
+      const lat = destinoLat;
+      const lng = destinoLng;
+      const dist = 0.0;
+      const agora = new Date();
+      const d = agora.getDate(), mo = agora.getMonth() + 1;
+      const h = agora.getHours(), m = agora.getMinutes();
+      const total = d + mo + h + m;
+      let dezenas = total % 100;
+      if (dezenas === 0) dezenas = 1;
+      let grupoNum = Math.ceil(dezenas / 4);
+      if (grupoNum > 25) grupoNum = 25;
+      const animal = nomes[grupoNum - 1];
+      const letra = d % 2 === 0 ? animal.charAt(0).toUpperCase() : animal.charAt(animal.length - 1).toUpperCase();
+
+      const nomesPT = [
+        "Avestruz", "Águia", "Burro", "Borboleta", "Cachorro",
+        "Cabra", "Carneiro", "Camelo", "Cobra", "Coelho",
+        "Cavalo", "Elefante", "Galo", "Gato", "Jacaré",
+        "Leão", "Macaco", "Porco", "Pavão", "Peru",
+        "Touro", "Tigre", "Urso", "Veado", "Vaca"
+      ];
+      const nomePT = nomesPT[grupoNum - 1].normalize("NFD").replace(/[^\w]/g, "").toUpperCase();
+      const letraPT = nomePT[Math.floor(Math.random() * nomePT.length)];
+
+      const hh = h.toString().padStart(2, '0');
+      const mm = m.toString().padStart(2, '0');
+
+      document.getElementById("departamento").textContent = "DEMO Authorized";
+      document.getElementById("hora").textContent = hh + ":" + mm;
+      document.getElementById("latlng").textContent = "Your location: " + lat.toFixed(6) + ", " + lng.toFixed(6);
+      document.getElementById("target").textContent = "Target location: " + destinoLat + ", " + destinoLng;
+      document.getElementById("dist").textContent = "Distance: 0.00 meters (0.00 feet)";
+      document.getElementById("codigo").textContent = letra + letraPT + grupoNum;
+      document.getElementById("alerta").textContent = "✅ Authorized area";
+      document.getElementById("verificacao").textContent = "Authorized? YES";
+    }
+    window.onload = atualizar;
+  </script>
+</head>
+<body>
+  <div id="departamento"></div>
+  <div id="hora"></div>
+  <div id="codigo"></div>
+  <div id="alerta"></div>
+  <div id="latlng"></div>
+  <div id="target"></div>
+  <div id="dist"></div>
+  <div id="verificacao"></div>
+</body>
+</html>
