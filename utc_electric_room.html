@@ -1,111 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>UTC Electric Room</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 20px;
-    }
-    #departamento { font-size: 4em; }
-    #hora { font-size: 5em; }
-    #codigo { font-size: 4em; margin-top: 20px; }
-    #alerta { font-size: 3em; color: red; margin-top: 20px; }
-    #latlng, #target, #dist, #verificacao { font-size: 1.5em; margin-top: 10px; }
-  </style>
-  <script>
-    const nomes = [
-      "Ostrich", "Eagle", "Donkey", "Butterfly", "Dog",
-      "Goat", "Ram", "Camel", "Snake", "Rabbit",
-      "Horse", "Elephant", "Rooster", "Cat", "Alligator",
-      "Lion", "Monkey", "Pig", "Peacock", "Turkey",
-      "Bull", "Tiger", "Bear", "Deer", "Cow"
-    ];
-    const destinoLat = 32.1652487;
-    const destinoLng = -81.4574469;
 
-    function distancia(lat1, lon1, lat2, lon2) {
-      const toRad = x => x * Math.PI / 180;
-      const R = 6371e3;
-      const φ1 = toRad(lat1), φ2 = toRad(lat2);
-      const Δφ = toRad(lat2 - lat1);
-      const Δλ = toRad(lon2 - lon1);
-      const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
-    }
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>UTC Electric Room</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 40px;
+            }
+            h1 {
+                font-size: 42px;
+                margin-bottom: 20px;
+            }
+            .info {
+                font-size: 24px;
+                margin-top: 10px;
+            }
+            .code {
+                font-size: 48px;
+                color: green;
+                font-weight: bold;
+                margin-top: 20px;
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>UTC Electric Room</h1>
+        <div class="info">Your Location: <span id="your-location">...</span></div>
+        <div class="info">QR Position: 32.1652487, -81.4574469</div>
+        <div class="info">Distance: <span id="distance">...</span> feet</div>
+        <div class="info">Authorized? <span id="authorized">Checking...</span></div>
+        <div class="code" id="secret-code">EE122</div>
 
-    function atualizar(pos) {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      const dist = distancia(lat, lng, destinoLat, destinoLng);
-      const agora = new Date();
-      const d = agora.getDate(), mo = agora.getMonth() + 1;
-      const h = agora.getHours(), m = agora.getMinutes();
-      const total = d + mo + h + m;
-      let dezenas = total % 100;
-      if (dezenas === 0) dezenas = 1;
-      let grupoNum = Math.ceil(dezenas / 4);
-      if (grupoNum > 25) grupoNum = 25;
-      const animal = nomes[grupoNum - 1];
-      const letra = d % 2 === 0 ? animal.charAt(0).toUpperCase() : animal.charAt(animal.length - 1).toUpperCase();
+        <script>
+        const targetLat = 32.1652487;
+        const targetLon = -81.4574469;
+        const R = 6371e3;
 
-      // Letra aleatória do nome em português
-      const nomesPT = [
-        "Avestruz", "Águia", "Burro", "Borboleta", "Cachorro",
-        "Cabra", "Carneiro", "Camelo", "Cobra", "Coelho",
-        "Cavalo", "Elefante", "Galo", "Gato", "Jacaré",
-        "Leão", "Macaco", "Porco", "Pavão", "Peru",
-        "Touro", "Tigre", "Urso", "Veado", "Vaca"
-      ];
-      const nomePT = nomesPT[grupoNum - 1].normalize("NFD").replace(/[^\w]/g, "").toUpperCase();
-      const letraPT = nomePT[Math.floor(Math.random() * nomePT.length)];
+        function toRad(deg) {
+            return deg * Math.PI / 180;
+        }
 
-      const hh = h.toString().padStart(2, '0');
-      const mm = m.toString().padStart(2, '0');
+        function distanceInFeet(lat1, lon1, lat2, lon2) {
+            const φ1 = toRad(lat1);
+            const φ2 = toRad(lat2);
+            const Δφ = toRad(lat2 - lat1);
+            const Δλ = toRad(lon2 - lon1);
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c * 3.28084;
+        }
 
-      document.getElementById("departamento").textContent = "UTC Electric Room";
-      document.getElementById("hora").textContent = hh + ":" + mm;
-      document.getElementById("latlng").textContent = "Your location: " + lat.toFixed(6) + ", " + lng.toFixed(6);
-      document.getElementById("target").textContent = "Target location: " + destinoLat + ", " + destinoLng;
-      document.getElementById("dist").textContent = "Distance: " + dist.toFixed(2) + " meters (" + (dist * 3.28084).toFixed(2) + " feet)";
+        function showPosition(pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const distance = distanceInFeet(lat, lon, targetLat, targetLon);
+            document.getElementById("your-location").textContent = lat.toFixed(6) + ", " + lon.toFixed(6);
+            document.getElementById("distance").textContent = distance.toFixed(2);
+            const authorized = distance <= 200;
+            document.getElementById("authorized").textContent = authorized ? "Yes" : "No";
+            if (authorized) {
+                document.getElementById("secret-code").style.display = "block";
+            }
+        }
 
-      if (dist <= 60) {
-        document.getElementById("codigo").textContent = letra + letraPT + grupoNum;
-        document.getElementById("alerta").textContent = "✅ Authorized area";
-        document.getElementById("verificacao").textContent = "Authorized? YES";
-      } else {
-        document.getElementById("codigo").textContent = "";
-        document.getElementById("alerta").textContent = "🚫 Outside authorized area";
-        document.getElementById("verificacao").textContent = "Authorized? NO";
-      }
-    }
-
-    function erro(err) {
-      document.getElementById("alerta").textContent = "❌ Error accessing location: " + err.message;
-    }
-
-    window.onload = () => {
-      navigator.geolocation.getCurrentPosition(atualizar, erro);
-    };
-  </script>
-</head>
-<body>
-  <div id="departamento"></div>
-  <div id="hora"></div>
-  <div id="codigo"></div>
-  <div id="alerta"></div>
-  <div id="latlng"></div>
-  <div id="target"></div>
-  <div id="dist"></div>
-  <div id="verificacao"></div>
-</body>
-</html>
+        navigator.geolocation.getCurrentPosition(showPosition);
+        </script>
+    </body>
+    </html>
+    
